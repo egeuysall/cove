@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "internal/supabase/queries"
+    schema: "internal/supabase/schema.sql"
+    gen:
+      go:
+        package: "supabase"
+        out: "internal/supabase/generated"
+        sql_package: "pgx/v5"
