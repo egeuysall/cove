@@ -20,7 +20,7 @@ const Signup: React.FC = () => {
         setError("");
         setMessage("");
 
-        const {data, error} = await supabase.auth.signUp({
+        const {error} = await supabase.auth.signUp({
             email,
             password,
             options: {
