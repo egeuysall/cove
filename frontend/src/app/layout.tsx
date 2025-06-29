@@ -35,7 +35,9 @@ export default function RootLayout({
         >
         <Analytics/>
         <Navbar/>
-        {children}
+        <main>
+            {children}
+        </main>
         <SpeedInsights/>
         </body>
         </html>

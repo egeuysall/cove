@@ -6,7 +6,7 @@ import {buttonClass} from "@/utils/styles";
 
 const Home: React.FC = () => {
     return (
-        <main className="flex flex-col items-center bg-white">
+        <main className="flex flex-col items-center">
             <div className="w-[90vw] md:w-[92.5vw] lg:w-[95vw] py-24 flex flex-col gap-6">
                 <section>
                     <h1 className="md:w-3/4 lg:w-2/4 text-gray-800 text-2xl md:text-3xl lg:text-4xl font-bold">
