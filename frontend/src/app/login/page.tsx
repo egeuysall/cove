@@ -70,7 +70,7 @@ const Login: React.FC = () => {
 
                 <p className="text-gray-800 opacity-50">or</p>
 
-                <div className="grid w-full md:w-96 gap-3">
+                <div className="grid w-full md:w-59 gap-3">
                     <input
                         type="email"
                         placeholder="Email"
