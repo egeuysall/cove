@@ -1,0 +1,1 @@
+export const buttonClass: string = 'bg-teal-700 text-white w-full font-bold py-2 px-4 rounded-lg hover:opacity-75 transition duration-200'
