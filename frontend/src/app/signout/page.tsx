@@ -25,7 +25,7 @@ const SignOut: React.FC = () => {
     }, [router]);
 
     return (
-        <main className="flex flex-col gap-6 items-center justify-center h-screen text-gray-800">
+        <main className="flex flex-col gap-6 items-center justify-center h-screen text-gray-800 bg-white">
             <ChaoticOrbit size="35" speed="1.5" color="#1F2937"/>
             <p>Signing out...</p>
         </main>

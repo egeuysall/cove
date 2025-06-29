@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Present: Plan. Track. Gift.",
-    description: "Present helps you organize, track, and share gift lists with ease. Stay on budget and never miss a gift. Start managing your gifts today!",
+    title: "Cove",
+    description: "Cove is a private social network for friends to share links, react, and comment in a minimal space.",
     icons: {
         icon: "/icon.ico",
     },
@@ -35,7 +35,7 @@ export default function RootLayout({
         >
         <Analytics/>
         <Navbar/>
-        <main>
+        <main className="bg-white">
             {children}
         </main>
         <SpeedInsights/>
