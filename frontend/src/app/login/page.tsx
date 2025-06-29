@@ -25,7 +25,7 @@ const Login: React.FC = () => {
             setError(error.message);
         } else {
             setError("");
-            window.location.reload();
+            window.location.href = "/dashboard";
         }
     };
 

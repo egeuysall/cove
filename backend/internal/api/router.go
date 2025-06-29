@@ -39,7 +39,7 @@ func Router() *chi.Mux {
 		// Groups
 		r.Post("/groups", handlers.HandleCreateGroup)
 		r.Get("/groups", handlers.HandleGetGroupsByUser)
-		r.Get("/groups/{id}", handlers.HandleGetGroupByID)
+		r.Get("/groups/{id}", handlers.HandleGetGroupById)
 		r.Delete("/groups/{id}", handlers.HandleDeleteGroup)
 
 		// Group Members
@@ -54,7 +54,7 @@ func Router() *chi.Mux {
 
 		// Links
 		r.Post("/links", handlers.HandleCreateLink)
-		r.Get("/links/{id}", handlers.HandleGetLinkByID)
+		r.Get("/links/{id}", handlers.HandleGetLinkById)
 		r.Get("/groups/{groupID}/links", handlers.HandleGetLinksByGroup)
 		r.Patch("/links/{id}", handlers.HandleUpdateLinkComment)
 		r.Delete("/links/{id}", handlers.HandleDeleteLink)

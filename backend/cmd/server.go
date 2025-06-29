@@ -36,7 +36,7 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", portStr)
 
-	log.Printf("Server starting on https://presentapi.egeuysal.com")
+	log.Printf("Server starting on http://localhost%s", addr)
 	err = http.ListenAndServe(addr, router)
 
 	if err != nil {
