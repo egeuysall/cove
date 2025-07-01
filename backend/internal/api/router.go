@@ -33,9 +33,6 @@ func Router() *chi.Mux {
 	r.Route("/v1", func(r chi.Router) {
 		r.Use(appmid.RequireAuth())
 
-		// User info
-		r.Get("/me", handlers.HandleMe)
-
 		// Groups
 		r.Post("/groups", handlers.HandleCreateGroup)
 		r.Get("/groups", handlers.HandleGetGroupsByUser)
