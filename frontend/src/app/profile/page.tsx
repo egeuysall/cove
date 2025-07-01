@@ -1,11 +1,15 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
+
 import {createBrowserClient} from "@supabase/ssr";
+import type {User} from '@supabase/supabase-js';
+
+import Avatar from "@/components/avatar";
 import {ChaoticOrbit} from "ldrs/react";
 import 'ldrs/react/ChaoticOrbit.css';
+
 import {buttonClass} from "@/utils/styles";
-import Avatar from "@/components/avatar";
 
 const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,7 +17,7 @@ const supabase = createBrowserClient(
 );
 
 const Profile: React.FC = () => {
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<User>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 

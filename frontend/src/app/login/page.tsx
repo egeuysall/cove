@@ -13,7 +13,7 @@ const supabase = createBrowserClient(
 const Login: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); 
 
     const handleLogin = async () => {
         const {error} = await supabase.auth.signInWithPassword({
