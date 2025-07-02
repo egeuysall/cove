@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	generated "github.com/egeuysall/cove/internal/supabase/generated"
+	"github.com/jackc/pgx/v5/pgtype"
 	"log"
 	"net/http"
 )
@@ -33,4 +34,10 @@ func SendError(w http.ResponseWriter, message string, statusCode int) {
 	if err != nil {
 		log.Printf("SendError encoding failed: %v", err)
 	}
+}
+
+func ParseUUID(str string) (pgtype.UUID, error) {
+	var id pgtype.UUID
+	err := id.Scan(str)
+	return id, err
 }

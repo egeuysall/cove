@@ -8,3 +8,7 @@ type Group struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	CreatedBy string    `json:"created_by,omitempty"`
 }
+
+type User struct {
+	UserId string `json:"user_id"`
+}
