@@ -5,21 +5,21 @@ import {Menu, X} from "lucide-react";
 import Link from "next/link";
 import {ProfilePhoto} from "./profile-photo";
 import Image from "next/image";
+import {Invites} from "@/components/invites";
 
 const desktopNavItems = [
-    {label: "Home", href: "/"},
-    {label: "Groups", href: "/groups"},
-    {label: "Invites", href: "/invites"},
-    {label: "Login", href: "/login"},
+    { label: "Home", href: "/" },
+    { label: "Groups", href: "/groups" },
+    { label: "Login", href: "/login" },
 ];
 
 const mobileNavItems = [
-    {label: "Home", href: "/"},
-    {label: "Groups", href: "/groups"},
-    {label: "Invites", href: "/invites"},
-    {label: "Profile", href: "/profile"},
-    {label: "Login", href: "/login"},
-    {label: "Logout", href: "/logout"},
+    { label: "Home", href: "/" },
+    { label: "Groups", href: "/groups" },
+    { label: "Invites", href: "/invites" },
+    { label: "Profile", href: "/profile" },
+    { label: "Login", href: "/login" },
+    { label: "Logout", href: "/logout" },
 ];
 
 export const Navbar: React.FC = () => {
@@ -38,17 +38,22 @@ export const Navbar: React.FC = () => {
                     <span className="hidden md:flex">Cove</span>
                 </Link>
 
-                <ul className="hidden md:flex items-center gap-6">
+                <ul className="hidden md:flex items-center gap-4">
                     {desktopNavItems.map((item) => (
                         <li key={item.href}>
                             <Link
                                 href={item.href}
-                                className="text-sm font-semibold text-gray-800 hover:opacity-75 transition"
+                                className="text-sm font-bold text-gray-800 hover:opacity-75 transition duration-200 transition ease-in-out duration-200"
                             >
                                 {item.label}
                             </Link>
                         </li>
                     ))}
+
+                    <li>
+                        <Invites isMobile={false} />
+                    </li>
+
                     <ProfilePhoto/>
                 </ul>
 
@@ -61,7 +66,6 @@ export const Navbar: React.FC = () => {
                     {open ? <X size={24}/> : <Menu size={24}/>}
                 </button>
 
-                {/* Mobile dropdown with extra items */}
                 {open && (
                     <ul
                         className="absolute top-full right-4 mt-2 backdrop-blur-lg bg-white/90 border border-neutral-200 rounded-lg p-4 flex flex-col gap-3 w-48 md:hidden"
