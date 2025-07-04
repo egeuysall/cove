@@ -62,13 +62,14 @@ func HandleCreateInvite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b := make([]byte, 6)
+	b := make([]byte, 8)
 	_, err = rand.Read(b)
 	if err != nil {
 		utils.SendError(w, "Failed to generate invite code", http.StatusInternalServerError)
 		return
 	}
-	code := base64.URLEncoding.EncodeToString(b)[:8]
+
+	code := base64.RawURLEncoding.EncodeToString(b)[:10]
 
 	createParams := supabase.CreateInviteParams{
 		Code:    code,
