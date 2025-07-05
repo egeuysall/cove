@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {createBrowserClient} from "@supabase/ssr";
 import {buttonClass} from "@/utils/styles";
 
@@ -39,6 +39,41 @@ export const Invites: React.FC<InvitesProps> = ({ isMobile }) => {
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
+    const getAuthHeader = useCallback(async () => {
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.access_token) {
+            throw new Error("Not authenticated");
+        }
+
+        return {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json",
+        };
+    }, [supabase.auth]);
+
+    const fetchGroups = useCallback(async () => {
+        try {
+            const headers = await getAuthHeader();
+            const response = await fetch(`${API_BASE_URL}/groups`, { headers });
+
+            if (response.ok) {
+                const data = await response.json();
+                setGroups(data.data);
+            } else {
+                setError("Failed to load groups. Please try again.");
+            }
+        } catch (err) {
+            if (err instanceof Error && err.message === "Not authenticated") {
+                setError("Please sign in to continue");
+            } else {
+                setError("Failed to load groups. Please try again.");
+            }
+        }
+    }, [getAuthHeader]);
+
     // Close dropdown when clicking outside (desktop only)
     useEffect(() => {
         if (isMobile) return;
@@ -59,44 +94,7 @@ export const Invites: React.FC<InvitesProps> = ({ isMobile }) => {
         } else if (isOpen) {
             fetchGroups();
         }
-    }, [isOpen, isMobile]);
-
-    // Auth header helper
-    const getAuthHeader = async () => {
-        const {
-            data: { session },
-        } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-            throw new Error("Not authenticated");
-        }
-
-        return {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-        };
-    };
-
-    // Fetch groups
-    const fetchGroups = async () => {
-        try {
-            const headers = await getAuthHeader();
-            const response = await fetch(`${API_BASE_URL}/groups`, { headers });
-
-            if (response.ok) {
-                const data = await response.json();
-                setGroups(data.data);
-            } else {
-                const errorData = await response.json();
-                setError("Failed to load groups. Please try again.");
-            }
-        } catch (err) {
-            if (err instanceof Error && err.message === "Not authenticated") {
-                setError("Please sign in to continue");
-            } else {
-                setError("Failed to load groups. Please try again.");
-            }
-        }
-    };
+    }, [isOpen, isMobile, fetchGroups]);
 
     // Create invite
     const createInvite = async () => {
