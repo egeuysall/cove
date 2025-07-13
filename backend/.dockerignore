@@ -1,0 +1,31 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build artifacts
+/build
+/bin
+/dist
+
+# VCS and tools
+.git
+.gitignore
+.gitattributes
+
+# Logs and temp files
+*.log
+*.tmp
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db

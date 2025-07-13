@@ -21,7 +21,7 @@ interface InvitesProps {
     isMobile?: boolean;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://coveapi.egeuysal.com/v1";
 
 export const Invites: React.FC<InvitesProps> = ({ isMobile }) => {
     const [isOpen, setIsOpen] = useState(false);

@@ -14,6 +14,7 @@ export default function GroupsPage() {
     const [loading, setLoading] = useState(true)
     const [groupName, setGroupName] = useState('')
     const [creating, setCreating] = useState(false)
+    const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null)
 
 
     // Fetch groups function extracted
@@ -35,7 +36,7 @@ export default function GroupsPage() {
         }
 
         try {
-            const res = await fetch('http://localhost:8080/v1/groups', {
+            const res = await fetch('https://coveapi.egeuysal.com/v1/groups', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -80,7 +81,7 @@ export default function GroupsPage() {
         }
 
         try {
-            const res = await fetch('http://localhost:8080/v1/groups', {
+            const res = await fetch('https://coveapi.egeuysal.com/v1/groups', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,6 +101,49 @@ export default function GroupsPage() {
             alert(String(error))
         } finally {
             setCreating(false)
+        }
+    }
+
+    // Handle delete group
+    const handleDelete = async (groupId: string) => {
+        if (deletingGroupId) return // Prevent multiple simultaneous deletions
+
+        setDeletingGroupId(groupId)
+
+        const supabase = createBrowserClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        )
+        const {
+            data: { session },
+        } = await supabase.auth.getSession()
+
+        const token = session?.access_token
+        if (!token) {
+            alert('Not authenticated')
+            setDeletingGroupId(null)
+            return
+        }
+
+        try {
+            const res = await fetch(`https://coveapi.egeuysal.com/v1/groups/${groupId}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}))
+                throw new Error(errorData.message || 'Failed to delete group. You must be the creator of this group to delete it.')
+            }
+
+            // Refresh groups list after successful deletion
+            await fetchGroups()
+        } catch (error) {
+            alert(String(error))
+        } finally {
+            setDeletingGroupId(null)
         }
     }
 
@@ -150,9 +194,18 @@ export default function GroupsPage() {
                             {groups.map((group) => (
                                 <li key={group.ID} className="p-4 flex flex-col gap-1 text-gray-800 rounded-lg border border-neutral-200">
                                     <h3 className="md:w-3/4 lg:w-2/4 text-gray-800 text-lg md:text-xl font-bold">{group.Name}</h3>
-                                    <Link href={`/groups/${encodeURIComponent(group.ID)}`}>
-                                        <button className={`${buttonClass} w-full md:w-auto`}>View</button>
-                                    </Link>
+                                    <div className="flex gap-2 mt-2">
+                                        <Link href={`/groups/${encodeURIComponent(group.ID)}`} className="flex-1">
+                                            <button className={`${buttonClass} w-full`}>View</button>
+                                        </Link>
+                                        <button
+                                            onClick={() => handleDelete(group.ID)}
+                                            disabled={deletingGroupId === group.ID}
+                                            className={`${buttonClass} w-full flex-1`}
+                                        >
+                                            {deletingGroupId === group.ID ? 'Deleting...' : 'Delete'}
+                                        </button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>

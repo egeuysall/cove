@@ -24,7 +24,7 @@ const Signup: React.FC = () => {
             email,
             password,
             options: {
-                emailRedirectTo: `${window.location.origin}/dashboard`,
+                emailRedirectTo: `${window.location.origin}/groups`,
             },
         });
 
@@ -39,7 +39,7 @@ const Signup: React.FC = () => {
         const {error} = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/groups`,
             },
         });
 

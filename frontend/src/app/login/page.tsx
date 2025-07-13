@@ -25,7 +25,7 @@ const Login: React.FC = () => {
             setError(error.message);
         } else {
             setError("");
-            window.location.href = "/dashboard";
+            window.location.href = "/groups";
         }
     };
 
@@ -33,7 +33,7 @@ const Login: React.FC = () => {
         const {error} = await supabase.auth.signInWithOAuth({
             provider,
             options: {
-                redirectTo: `${window.location.origin}/dashboard`,
+                redirectTo: `${window.location.origin}/groups`,
             },
         });
 

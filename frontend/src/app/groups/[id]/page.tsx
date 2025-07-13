@@ -1,17 +1,18 @@
 import {createServerClient} from "@supabase/ssr";
 import {notFound} from "next/navigation";
-import {Group} from "@/types/api";
 import {cookies} from "next/headers";
 import React from "react";
+import {Group, Links} from "@/types/api";
+import {LinkCard} from "@/components/link-card";
+import {CreateLink} from "@/components/create-link";
 
 const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => {
     const { id } = await params;
     const cookieStore = await cookies();
 
-    // Create Supabase client with proper cookie handling
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
         {
             cookies: {
                 get(name: string) {
@@ -39,7 +40,22 @@ const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => 
     }
 
     try {
-        const res = await fetch(`http://localhost:8080/v1/groups/${encodeURIComponent(id)}`, {
+        const fetchedLinks = await fetch(`https://coveapi.egeuysal.com/v1/groups/${encodeURIComponent(id)}/links`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+
+        if (!fetchedLinks.ok) {
+            console.error(`Something went wrong. Try again.`);
+            return notFound();
+        }
+
+        const json = await fetchedLinks.json();
+        const links: Links[] = json.data as Links[];
+
+        const res = await fetch(`https://coveapi.egeuysal.com/v1/groups/${encodeURIComponent(id)}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -47,18 +63,50 @@ const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => 
 
 
         if (!res.ok) {
-            console.error(`API Error: ${res.status} ${res.statusText}`);
+            console.error(`Something went wrong. Try again.`);
             return notFound();
         }
 
-        const json = await res.json();
-        const group: Group = json.data as Group;
-        console.log(group);
+        const groupData = await res.json();
+        const group: Group = groupData.data as Group;
+
+        const { data, error } = await supabase.auth.admin.getUserById(group.CreatedBy)
+
+        if (error) {
+            console.error(`Something went wrong. Try again.`);
+        }
 
         return (
             <main className="flex flex-col items-center bg-white">
-                <div className="w-[90vw] md:w-[92.5vw] lg:w-[95vw] py-24 flex flex-col items-center justify-center gap-6">
-                    <h1 className="md:w-3/4 lg:w-2/4 text-gray-800 text-2xl md:text-3xl lg:text-4xl font-bold text-center">{group.Name}</h1>
+                <div className="w-[90vw] md:w-[92.5vw] lg:w-[95vw] py-24 flex flex-col gap-6">
+                    <h1 className="md:w-3/4 lg:w-2/4 text-gray-800 text-2xl md:text-3xl lg:text-4xl font-bold mb-12">
+                        {group.Name}
+                        {" "}
+                        <span className="text-sm md:text-base font-normal opacity-75">by {data?.user?.user_metadata?.name || data?.user?.user_metadata?.email}
+                        </span>
+                    </h1>
+                    {links.length > 0 ? (
+                        links.map((link: Links) => (
+                            <LinkCard
+                                key={link.id}
+                                id={link.id}
+                                user_id={link.user_id}
+                                url={link.url}
+                                created_at={link.created_at}
+                                title={link.title}
+                                comment={link.comment}
+                            />
+                        ))
+                    ) : (
+                        <div className="text-gray-500 text-center py-8">
+                            No links found. Add a link below.
+                        </div>
+                    )}
+
+                    {/* Create Link Form at bottom of page */}
+                    <div className="mt-12">
+                        <CreateLink groupId={id} />
+                    </div>
                 </div>
             </main>
         );

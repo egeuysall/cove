@@ -1,0 +1,25 @@
+# Dependency directories
+node_modules
+.pnpm-store
+dist
+build
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS + Editor files
+.DS_Store
+Thumbs.db
+*.swp
+.idea
+.vscode
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
