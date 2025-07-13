@@ -67,7 +67,7 @@ export const LinkCard = async ({ user_id, url, title, comment, created_at }: Lin
         <>
             <p className="text-center opacity-50 text-sm md:text-base">{formatted}</p>
             <section className={`flex items-center gap-2 ${isMe ? "self-end" : "self-start"}`}>
-                {!isMe && <Avatar avatarUrl={avatarUrl} email={email} />}
+                {!isMe && <Avatar avatarUrl={avatarUrl} email={email} className="!w-13 !h-13"/>}
                 <Link href={url} passHref>
                 <div className={`flex flex-col gap-1 border p-2 border-neutral-200 rounded-lg w-fit ${isMe ? "bg-teal-700 text-white" : "bg-neutral-300 text-gray-800"}`}>
                     <h3 className="underline hover:opacity-75 transition duration-200">{title}</h3>
