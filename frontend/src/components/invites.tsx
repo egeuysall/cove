@@ -221,7 +221,7 @@ export const Invites: React.FC<InvitesProps> = ({ isMobile }) => {
                     className="w-full p-1.5 border border-neutral-200 rounded-lg text-sm mb-2"
                 >
                     <option value="">Select a group</option>
-                    {groups.map((group) => (
+                    {(groups ?? []).map((group) => (
                         <option key={group.ID} value={group.ID}>
                             {group.Name}
                         </option>
