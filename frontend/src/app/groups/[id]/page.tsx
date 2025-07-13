@@ -86,7 +86,7 @@ const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => 
                         </span>
                     </h1>
                     {links.length > 0 ? (
-                        links.map((link: Links) => (
+                        links.slice().reverse().map((link: Links) => (
                             <LinkCard
                                 key={link.id}
                                 id={link.id}
