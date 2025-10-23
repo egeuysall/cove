@@ -5,12 +5,13 @@ import (
 
 	"github.com/egeuysall/cove/internal/handlers"
 	appmid "github.com/egeuysall/cove/internal/middleware"
+	"github.com/egeuysall/cove/internal/websocket"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httprate"
 )
 
-func Router() *chi.Mux {
+func Router(hub *websocket.Hub) *chi.Mux {
 	r := chi.NewRouter()
 
 	// Global middleware
@@ -32,6 +33,10 @@ func Router() *chi.Mux {
 	// Protected API v1 routes
 	r.Route("/v1", func(r chi.Router) {
 		r.Use(appmid.RequireAuth())
+
+		// WebSocket
+		wsHandler := websocket.NewHandler(hub)
+		r.Get("/ws", wsHandler.ServeWs)
 
 		// Groups
 		r.Post("/groups", handlers.HandleCreateGroup)

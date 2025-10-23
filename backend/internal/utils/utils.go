@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	generated "github.com/egeuysall/cove/internal/supabase/generated"
+	"github.com/egeuysall/cove/internal/websocket"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"log"
@@ -10,9 +11,14 @@ import (
 )
 
 var Queries *generated.Queries
+var Hub *websocket.Hub
 
 func Init(q *generated.Queries) {
 	Queries = q
+}
+
+func SetHub(h *websocket.Hub) {
+	Hub = h
 }
 
 func SendJson(w http.ResponseWriter, message interface{}, statusCode int) {

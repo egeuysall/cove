@@ -10,6 +10,7 @@ import (
 	"github.com/egeuysall/cove/internal/api"
 	supabase "github.com/egeuysall/cove/internal/supabase"
 	generated "github.com/egeuysall/cove/internal/supabase/generated"
+	"github.com/egeuysall/cove/internal/websocket"
 	"github.com/joho/godotenv"
 )
 
@@ -26,7 +27,12 @@ func main() {
 
 	utils.Init(queries)
 
-	router := api.Router()
+	// Initialize WebSocket hub
+	hub := websocket.NewHub()
+	go hub.Run()
+	utils.SetHub(hub)
+
+	router := api.Router(hub)
 
 	portStr := os.Getenv("PORT")
 
