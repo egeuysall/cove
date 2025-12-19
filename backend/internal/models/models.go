@@ -44,3 +44,14 @@ type LinkResponse struct {
 	Comment   string    `json:"comment,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+// WebSocket message types
+type WebSocketMessage struct {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
+
+type SubscribeMessage struct {
+	Type    string `json:"type"`
+	GroupID string `json:"groupId"`
+}

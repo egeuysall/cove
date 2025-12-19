@@ -3,8 +3,8 @@ import {notFound} from "next/navigation";
 import {cookies} from "next/headers";
 import React from "react";
 import {Group, Links} from "@/types/api";
-import {LinkCard} from "@/components/link-card";
 import {CreateLink} from "@/components/create-link";
+import {RealTimeLinks} from "@/components/real-time-links";
 
 const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => {
     const { id } = await params;
@@ -85,23 +85,7 @@ const DynamicGroups = async ({ params }: { params: Promise<{ id: string}> }) => 
                         <span className="text-sm md:text-base font-normal opacity-75">by {data?.user?.user_metadata?.name || data?.user?.user_metadata?.email}
                         </span>
                     </h1>
-                    {links.length > 0 ? (
-                        links.slice().reverse().map((link: Links) => (
-                            <LinkCard
-                                key={link.id}
-                                id={link.id}
-                                user_id={link.user_id}
-                                url={link.url}
-                                created_at={link.created_at}
-                                title={link.title}
-                                comment={link.comment}
-                            />
-                        ))
-                    ) : (
-                        <div className="text-gray-500 text-center py-8">
-                            No links found. Add a link below.
-                        </div>
-                    )}
+                    <RealTimeLinks initialLinks={links.slice().reverse()} groupId={id} />
 
                     {/* Create Link Form at bottom of page */}
                     <div className="mt-12">

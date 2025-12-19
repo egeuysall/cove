@@ -85,7 +85,14 @@ func HandleCreateLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendJson(w, convertToResponse(link), http.StatusCreated)
+	linkResponse := convertToResponse(link)
+
+	// Broadcast to WebSocket clients
+	if utils.Hub != nil {
+		utils.Hub.BroadcastToGroup(req.GroupID, "link_created", linkResponse)
+	}
+
+	utils.SendJson(w, linkResponse, http.StatusCreated)
 }
 
 func HandleGetLinkById(w http.ResponseWriter, r *http.Request) {
@@ -263,7 +270,14 @@ func HandleUpdateLinkComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendJson(w, convertToResponse(updatedLink), http.StatusOK)
+	linkResponse := convertToResponse(updatedLink)
+
+	// Broadcast to WebSocket clients
+	if utils.Hub != nil {
+		utils.Hub.BroadcastToGroup(utils.UUIDToString(updatedLink.GroupID), "link_updated", linkResponse)
+	}
+
+	utils.SendJson(w, linkResponse, http.StatusOK)
 }
 
 func HandleDeleteLink(w http.ResponseWriter, r *http.Request) {
@@ -291,6 +305,22 @@ func HandleDeleteLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get link before deleting to broadcast group ID
+	link, err := utils.Queries.GetLinkByID(r.Context(), linkId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			utils.SendError(w, "Link not found", http.StatusNotFound)
+			return
+		}
+		utils.SendError(w, "Failed to get link", http.StatusInternalServerError)
+		return
+	}
+
+	if link.UserID != userId {
+		utils.SendError(w, "Not authorized to delete this link", http.StatusForbidden)
+		return
+	}
+
 	deleteParams := supabase.DeleteLinkParams{
 		ID:     linkId,
 		UserID: userId,
@@ -300,6 +330,13 @@ func HandleDeleteLink(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		utils.SendError(w, "Link not found or you're not authorized to delete it", http.StatusNotFound)
 		return
+	}
+
+	// Broadcast to WebSocket clients
+	if utils.Hub != nil {
+		utils.Hub.BroadcastToGroup(utils.UUIDToString(link.GroupID), "link_deleted", map[string]string{
+			"id": utils.UUIDToString(link.ID),
+		})
 	}
 
 	utils.SendJson(w, "Link deleted successfully", http.StatusOK)

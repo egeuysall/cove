@@ -37,18 +37,26 @@ func RequireAuth() func(http.Handler) http.Handler {
 				return
 			}
 
+			var tokenStr string
+
+			// Try to get token from Authorization header first
 			authHeader := r.Header.Get("Authorization")
-			if authHeader == "" {
-				utils.SendError(w, "Unauthorized: missing Authorization header", http.StatusUnauthorized)
-				return
+			if authHeader != "" {
+				parts := strings.SplitN(authHeader, " ", 2)
+				if len(parts) == 2 && strings.EqualFold(parts[0], "Bearer") {
+					tokenStr = parts[1]
+				}
 			}
 
-			parts := strings.SplitN(authHeader, " ", 2)
-			if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") {
-				utils.SendError(w, "Unauthorized: invalid Authorization header format", http.StatusUnauthorized)
+			// If no token in header, try query parameter (for WebSocket connections)
+			if tokenStr == "" {
+				tokenStr = r.URL.Query().Get("token")
+			}
+
+			if tokenStr == "" {
+				utils.SendError(w, "Unauthorized: missing token", http.StatusUnauthorized)
 				return
 			}
-			tokenStr := parts[1]
 
 			// Parse and validate the token
 			token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
